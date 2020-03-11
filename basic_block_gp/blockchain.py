@@ -91,7 +91,7 @@ class Blockchain(object):
         leading zeroes?  Return true if the proof is valid
         :param block_string: <string> The stringified block to use to
         check in combination with `proof`
-        :param proof: <int?> The value that when combined with the
+        :param proof: <int?> The value that when combined with the 
         stringified previous block results in a hash that has the
         correct number of leading zeroes.
         :return: True if the resulting hash is a valid proof, False otherwise
