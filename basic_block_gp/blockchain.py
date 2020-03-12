@@ -63,10 +63,10 @@ class Blockchain(object):
         # or we'll have inconsistent hashes
 
         # TODO: Create the block_string
-        string_block = json.dumps(block, sort_keys=True) # <- making sure it's always sorted and order doesn't change
+        block_string = json.dumps(block, sort_keys=True) # <- making sure it's always sorted and order doesn't change
 
         # TODO: Hash this string using sha256
-        raw_hash = hashlib.sha256(string_block.encode())
+        raw_hash = hashlib.sha256(block_string.encode())
         hex_hash = raw_hash.hexdigest()
 
         # By itself, the sha256 function returns the hash in a raw string
@@ -91,8 +91,15 @@ class Blockchain(object):
         :return: A valid proof for the provided block
         """
         # TODO
-        pass
-        # return proof
+        proof = 0
+
+        block_string = json.dumps(block, sort_keys=True)
+
+        while self.valid_proof(block_string, proof) is False:
+            proof +=1
+        # return True or False
+
+        return proof
 
     @staticmethod
     def valid_proof(block_string, proof):
@@ -107,8 +114,10 @@ class Blockchain(object):
         :return: True if the resulting hash is a valid proof, False otherwise
         """
         # TODO
-        pass
-        # return True or False
+        guess = f"{block_string}{proof}".encode()
+        guess_hash = hashlib.sha256(guess).hexdigest()
+
+        return guess_hash[:6] == "000000"
 
 
 # Instantiate our Node
@@ -124,11 +133,15 @@ blockchain = Blockchain()
 @app.route('/mine', methods=['GET'])
 def mine():
     # Run the proof of work algorithm to get the next proof
+    proof = blockchain.proof_of_work(blockchain.last_block)
 
     # Forge the new Block by adding it to the chain with the proof
+    previous_hash = blockchain.hash(blockchain.last_block)
+    block = blockchain.new_block(proof, previous_hash)
+
 
     response = {
-        # TODO: Send a JSON response with the new block
+        "new_block": block
     }
 
     return jsonify(response), 200
