@@ -73,15 +73,16 @@ if __name__ == '__main__':
         # TODO: Get the block from `data` and use it to look for a new proof
         last_block = data.get('last_block')
         print('test')
-        start = time.time()
+        # start = time.time()
         new_block = proof_of_work(last_block)
-        end = time.time()
+        # end = time.time()
+
         # When found, POST it to the server {"proof": new_proof, "id": id}
         post_data = {"proof": new_block, "id": id}
 
         r = requests.post(url=node + "/mine", json=post_data)
         data = r.json()
-        # print('new coin', data)
+        print('new coin', data)
         # TODO: If the server responds with a 'message' 'New Block Forged'
         # add 1 to the number of coins mined and print it.  Otherwise,
         # print the message from the server.
@@ -89,7 +90,7 @@ if __name__ == '__main__':
         # print(data)
         if data["message"] == 'New Block Forged':
             coins += 1
-            print(f"New hexcoin mined in {round((end - start), 2)}")
+            # print(f"New hexcoin mined in {round((end - start), 2)}")
             print(f"Coins: {coins}")
         else:
             print(data["message"])
