@@ -48,12 +48,12 @@ class Blockchain(object):
 
     def new_transaction(self, sender, recipient, amount):
         self.current_transactions.append({
-            sender: sender,
-            recipient: recipient,
-            amount: amount
+            "sender": sender,
+            "recipient": recipient,
+            "amount": amount
         })
 
-        return self.last_block.index
+        return self.last_block["index"]
 
     def hash(self, block):
         """
@@ -185,7 +185,7 @@ def mine():
                 "new_block": block
             }
 
-            blockchain.new_transaction('0', data["id"], 1)
+            blockchain.new_transaction('0', data["id"], '1')
 
             return jsonify(response), 200
         else:
@@ -198,12 +198,17 @@ def mine():
 
 @app.route('/chain', methods=['GET'])
 def full_chain():
+    print('check')
     response = {
         # TODO: Return the chain and its current length
         'chain': blockchain.chain,
         'length': len(blockchain.chain)
     }
-    return jsonify(response), 200
+    
+    response = jsonify(response)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+
+    return response
 
 # returning last block in chain
 @app.route('/last-block', methods=['GET'])
